@@ -41,8 +41,28 @@ Then we crop out a region of interest.
 We use an image with "straight" lanes to develop a transform to go from the original image to a birds-eye view of the lanes.
 We then apply this to our region of interest.
 
-## Find points on Lane Lines
+### Find points on Lane Lines
 We develop a window of a subset of the height of the image. We take a histogram in that area. From the histogram we identify the center of the lines and log the points on the left and right. We slide the window up the image and use previously identified points to constrain where we can look for the next points.
 
 ### Curve Fitting
+We define a Line class that will:
+* Accept new points and low-pass filter them
+* Fit the points to a curve
+* Calculate the line curvature
+* Generate evenly spaces points to use for lane overlay
+We apply this Line class to our image to find curves for the left and right lane lines.
+
+### Path Overlay
+We then use the points from the Line class to overlay a colored patch over the lane.
+
+### Text Overlay
+Lastly we print onto the image/frame text showing the lane curvature and the position of the vehicle relative to the center of the lane.
+
+## Room for Improvement and Cases for Failure
+The system has issues in the following situations:
+* Changes is lighting still make it difficult to separate the lanes since we rely on color filtering
+* Changes in ground color are difficult since we rely on edge detection
+* Thin lane lines are difficult to identify as they only get skinnier as the image gets processed
+* When the ground is discolored (e.g. fixing potholes), this create patches that can look like a lane dash and then can really throw off the line fit, since the fit does not throw out outliers.
+
 
